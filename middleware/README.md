@@ -24,6 +24,7 @@ const app = express();
 app.use(
   rendertron.makeMiddleware({
     proxyUrl: 'http://my-rendertron-instance/render',
+    renderMobile: isMobile()
   })
 );
 
