@@ -136,6 +136,11 @@ export interface Options {
    * Defaults to `"X-Forwarded-Host"`.
    */
   forwardedHostHeader?: string;
+  
+  /**
+   * Boolean to trigger rendertron's mobile rendering browser
+   */
+  renderMobile: boolean;
 }
 
 /**
