@@ -15,9 +15,6 @@ type ViewportDimensions = {
   height: number;
 };
 
-const MOBILE_USERAGENT =
-  'Mozilla/5.0 (Linux; Android 8.0.0; Pixel 2 XL Build/OPD1.170816.004) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.75 Mobile Safari/537.36';
-
 /**
  * Wraps Puppeteer's interface to Headless Chrome to expose high level rendering
  * APIs that are able to handle web components and PWAs.
@@ -38,7 +35,10 @@ export class Renderer {
       return true;
     }
 
-    if (this.config.restrictedUrlPattern && requestUrl.match(new RegExp(this.config.restrictedUrlPattern))) {
+    if (
+      this.config.restrictedUrlPattern &&
+      requestUrl.match(new RegExp(this.config.restrictedUrlPattern))
+    ) {
       return true;
     }
 
@@ -47,7 +47,7 @@ export class Renderer {
 
   async serialize(
     requestUrl: string,
-    isMobile: boolean,
+    userAgent: string,
     timezoneId?: string
   ): Promise<SerializedResponse> {
     /**
@@ -91,6 +91,14 @@ export class Renderer {
       }
     }
 
+    function checkIfMobile(userAgent: string) {
+      if (userAgent.toLowerCase().includes('mobi')) {
+        return true;
+      }
+      return false;
+    }
+
+    const isMobile = checkIfMobile(userAgent);
     const page = await this.browser.newPage();
 
     // Page may reload when setting isMobile
@@ -101,9 +109,7 @@ export class Renderer {
       isMobile,
     });
 
-    if (isMobile) {
-      page.setUserAgent(MOBILE_USERAGENT);
-    }
+    page.setUserAgent(userAgent);
 
     if (timezoneId) {
       try {
@@ -244,12 +250,21 @@ export class Renderer {
 
   async screenshot(
     url: string,
-    isMobile: boolean,
+    userAgent: string,
     dimensions: ViewportDimensions,
     options?: ScreenshotOptions,
     timezoneId?: string
   ): Promise<Buffer> {
     const page = await this.browser.newPage();
+
+    function checkIfMobile(userAgent: string) {
+      if (userAgent.toLowerCase().includes('mobi')) {
+        return true;
+      }
+      return false;
+    }
+    page.setUserAgent(userAgent);
+    const isMobile = checkIfMobile(userAgent);
 
     // Page may reload when setting isMobile
     // https://github.com/GoogleChrome/puppeteer/blob/v1.10.0/docs/api.md#pagesetviewportviewport
@@ -258,10 +273,6 @@ export class Renderer {
       height: dimensions.height,
       isMobile,
     });
-
-    if (isMobile) {
-      page.setUserAgent(MOBILE_USERAGENT);
-    }
 
     await page.setRequestInterception(true);
 

@@ -113,7 +113,8 @@ export class MemoryCache {
   private async handleRequest(ctx: Koa.Context, next: () => Promise<unknown>) {
     // Cache based on full URL. This means requests with different params are
     // cached separately.
-    const cacheKey = ctx.url;
+    const urlKey = ctx.url + ctx.header['user-agent'];
+    const cacheKey = encodeURIComponent(urlKey);
     const cachedContent = this.getCachedContent(ctx, cacheKey);
     if (cachedContent) {
       const headers = JSON.parse(cachedContent.headers);

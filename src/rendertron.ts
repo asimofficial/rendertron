@@ -148,11 +148,9 @@ export class Rendertron {
       return;
     }
 
-    const mobileVersion = 'mobile' in ctx.query ? true : false;
-
     const serialized = await this.renderer.serialize(
       url,
-      mobileVersion,
+      ctx.header['user-agent'],
       ctx.query.timezoneId
     );
 
@@ -185,12 +183,10 @@ export class Rendertron {
       height: Number(ctx.query['height']) || this.config.height,
     };
 
-    const mobileVersion = 'mobile' in ctx.query ? true : false;
-
     try {
       const img = await this.renderer.screenshot(
         url,
-        mobileVersion,
+        ctx.header['user-agent'],
         dimensions,
         ctx.query.timezoneId
       );
