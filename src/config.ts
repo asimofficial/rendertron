@@ -50,7 +50,7 @@ export class ConfigManager {
       cacheMaxEntries: '100',
     },
     timeout: 10000,
-    port: '3000',
+    port: '3001',
     host: '0.0.0.0',
     width: 1000,
     height: 1000,
@@ -59,7 +59,7 @@ export class ConfigManager {
     puppeteerArgs: ['--no-sandbox'],
     renderOnly: [],
     closeBrowser: false,
-    restrictedUrlPattern: null
+    restrictedUrlPattern: null,
   };
 
   static async getConfiguration(): Promise<Config> {

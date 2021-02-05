@@ -92,12 +92,11 @@ export class Renderer {
     }
 
     function checkIfMobile(userAgent: string) {
-      if (userAgent.toLowerCase().includes('mobi')) {
+      if ((userAgent || '').toLowerCase().includes('mobi')) {
         return true;
       }
       return false;
     }
-
     const isMobile = checkIfMobile(userAgent);
     const page = await this.browser.newPage();
 
@@ -109,7 +108,9 @@ export class Renderer {
       isMobile,
     });
 
-    page.setUserAgent(userAgent);
+    if (userAgent) {
+      page.setUserAgent(userAgent);
+    }
 
     if (timezoneId) {
       try {
@@ -155,7 +156,7 @@ export class Renderer {
     try {
       // Navigate to page. Wait until there are no oustanding network requests.
       response = await page.goto(requestUrl, {
-        timeout: this.config.timeout,
+        timeout: 0,
         waitUntil: 'networkidle0',
       });
     } catch (e) {
@@ -258,12 +259,14 @@ export class Renderer {
     const page = await this.browser.newPage();
 
     function checkIfMobile(userAgent: string) {
-      if (userAgent.toLowerCase().includes('mobi')) {
+      if ((userAgent || '').toLowerCase().includes('mobi')) {
         return true;
       }
       return false;
     }
-    page.setUserAgent(userAgent);
+    if (userAgent) {
+      page.setUserAgent(userAgent);
+    }
     const isMobile = checkIfMobile(userAgent);
 
     // Page may reload when setting isMobile
@@ -293,7 +296,7 @@ export class Renderer {
     try {
       // Navigate to page. Wait until there are no oustanding network requests.
       response = await page.goto(url, {
-        timeout: this.config.timeout,
+        timeout: 0,
         waitUntil: 'networkidle0',
       });
     } catch (e) {
